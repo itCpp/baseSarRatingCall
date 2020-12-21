@@ -6,17 +6,21 @@
     max-width: 500px;
 }
 
-.header-loading {
+.header-loading,
+.global-loading {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: #17a2b8c4;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
+}
+
+.header-loading {
+    background-color: #17a2b8c4;
 }
 
 .table-loading {
@@ -177,3 +181,6 @@
     border-color: #004992;
 }
 
+.access-false {
+    max-width: 700px;
+}

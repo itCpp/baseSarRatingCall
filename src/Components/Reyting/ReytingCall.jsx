@@ -8,6 +8,7 @@ import Icon from './../../Utils/FontAwesomeIcon'
 import ReytingRow from './ReytingRow'
 import ReytingRowTreners from './ReytingRowTreners'
 import ReytingHeaderStat from './ReytingHeaderStat'
+import ReytingSetPlane from './ReytingSetPlane'
 
 class ReytingCall extends React.Component {
 
@@ -33,11 +34,18 @@ class ReytingCall extends React.Component {
         plan: null, // План работы на период
         planInDay: null, // Количество приходов в день
 
+        access: true, // Доступ к рейтингу
+
+        calltoken: null,
+
     }
 
     getReytingInterval = null;
 
     componentDidMount = () => {
+
+        let params = (new URL(document.location)).searchParams; 
+        this.setState({ calltoken: params.get("calltoken") || null });
 
         this.getReyting();
 
@@ -72,6 +80,7 @@ class ReytingCall extends React.Component {
             start: this.state.start,
             stop: this.state.stop,
             filter: this.state.filter,
+            calltoken: this.state.calltoken,
         }
 
         axios.post('reyting/getCall', formdata).then(({ data }) => {
@@ -88,12 +97,15 @@ class ReytingCall extends React.Component {
             });
 
             if (!this.getReytingInterval)
-                this.getReytingInterval = setInterval(this.getReyting, 10000);
+                this.getReytingInterval = setInterval(this.getReyting, 30000);
 
         }).catch(error => {
 
+            let status = error?.response?.status || null; 
+
             this.setState({
-                error: echoerror(error)
+                error: echoerror(error),
+                access: status === 401 ? false : true,
             });
 
         }).then(() => {
@@ -356,6 +368,22 @@ class ReytingCall extends React.Component {
 
     }
 
+    /**
+     * Завершение установки нового плана
+     * 
+     * @param {string} period Дата начала отчетной недели
+     */
+    donePalne = period => {
+
+        if (period === this.state.start) {
+
+            this.setState({ loadingDate: true });
+            this.getReyting();
+
+        }
+
+    }
+
     render() {
 
         const rows = this.state.rows.map((row, key) => <ReytingRow key={key} row={row} opened={this.state.opened} showMore={this.showMore} plan={this.state.plan} filter={this.state.setfilter} />)
@@ -366,11 +394,17 @@ class ReytingCall extends React.Component {
             </div>
             : null
 
+        const globalLoading = this.state.loading
+            ? <div className="global-loading">
+                <Icon icon={['fas', 'spinner']} className="fa-spin" />
+            </div>
+            : null
+
         const loadingTable = this.state.loadingDate
             ? <div className="table-loading"></div>
             : null
 
-        const stat = this.state.loading 
+        const stat = this.state.loading
             ? null
             : <ReytingHeaderStat stat={this.state.stat} plan={this.state.plan} filter={this.state.setfilter} />
 
@@ -378,10 +412,20 @@ class ReytingCall extends React.Component {
             ? <ReytingRowTreners rows={this.state.treners} />
             : null
 
+        const setPlane = this.state.admin
+            ? <ReytingSetPlane donePalne={this.donePalne} />
+            : null
+
+        if (this.state.access === false) {
+            return <div className="py-5 my-4 text-center">
+                <div className="alert alert-danger mx-auto shadow access-false">Доступ к рейтингу ограничен</div>
+            </div>
+        }
+
         return (
             <div>
 
-                <div className="bg-info text-light py-3 text-center">
+                <div className={`bg-info text-light py-3 text-center ${this.state.loading === true ? 'd-none' : ''}`}>
 
                     <div className="header-content mx-auto position-relative">
 
@@ -412,6 +456,10 @@ class ReytingCall extends React.Component {
                         </div>
 
                         <div className="btn-group btn-group-sm d-block mt-2 mb-0" role="group">
+                            {setPlane}
+                        </div>
+
+                        <div className="btn-group btn-group-sm d-block mt-2 mb-0" role="group">
                             <button type="button" className={`btn btn-filter ${this.state.filter === "all" || this.state.filter === null ? 'active' : ''}`} onClick={this.setFilter} data-filter="all">Колл-центр</button>
                             <button type="button" className={`btn btn-filter ${this.state.filter === "3" ? 'active' : ''}`} onClick={this.setFilter} data-filter="3">Сектор <b>A</b></button>
                             <button type="button" className={`btn btn-filter ${this.state.filter === "4" ? 'active' : ''}`} onClick={this.setFilter} data-filter="4">Сектор <b>B</b></button>
@@ -423,6 +471,8 @@ class ReytingCall extends React.Component {
                     </div>
 
                 </div>
+
+                {globalLoading}
 
                 <div id="data-rows" className="rows-content position-relative">
 

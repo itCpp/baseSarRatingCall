@@ -2,6 +2,9 @@ function ReytingHeaderStat(props) {
 
     const row = props.stat;
 
+    if (props.plan === null)
+        return null;
+
     if (props.filter !== "all" && props.filter !== null)
         return null;
 
