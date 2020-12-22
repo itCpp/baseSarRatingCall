@@ -5,7 +5,7 @@ function ReytingHeaderStat(props) {
     if (props.plan === null)
         return null;
 
-    if (props.filter !== "all" && props.filter !== null)
+    if (props.filter !== "all" && props.filter !== null && !props.caller)
         return null;
 
     return (

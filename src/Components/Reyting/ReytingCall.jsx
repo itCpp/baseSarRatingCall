@@ -31,6 +31,9 @@ class ReytingCall extends React.Component {
         setfilter: null, // Примененный фильтр после загрузки данных
 
         admin: false, // Идентификтаор администратора
+        caller: false, // Идентификтаор прав кольщика
+        nach: false, // Идентификтаор прав руководителя
+
         plan: null, // План работы на период
         planInDay: null, // Количество приходов в день
 
@@ -42,10 +45,10 @@ class ReytingCall extends React.Component {
 
     getReytingInterval = null;
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
 
         let params = (new URL(document.location)).searchParams; 
-        this.setState({ calltoken: params.get("calltoken") || null });
+        await this.setState({ calltoken: params.get("calltoken") || null });
 
         this.getReyting();
 
@@ -85,8 +88,15 @@ class ReytingCall extends React.Component {
 
         axios.post('reyting/getCall', formdata).then(({ data }) => {
 
+            // let filter = data.filter || null;
+
+            // if (this.state.filter !== filter)
+            //     this.setState({ filter: String(filter) })
+
             this.setState({
                 admin: data.admin,
+                caller: data.caller,
+                nach: data.nach,
                 plan: data.plan,
                 rows: data.rows,
                 treners: data.treners || [],
@@ -373,7 +383,7 @@ class ReytingCall extends React.Component {
      * 
      * @param {string} period Дата начала отчетной недели
      */
-    donePalne = period => {
+    donePlane = period => {
 
         if (period === this.state.start) {
 
@@ -406,19 +416,19 @@ class ReytingCall extends React.Component {
 
         const stat = this.state.loading
             ? null
-            : <ReytingHeaderStat stat={this.state.stat} plan={this.state.plan} filter={this.state.setfilter} />
+            : <ReytingHeaderStat stat={this.state.stat} plan={this.state.plan} filter={this.state.setfilter} caller={this.state.caller} />
 
         const treners = this.state.admin
             ? <ReytingRowTreners rows={this.state.treners} />
             : null
 
         const setPlane = this.state.admin
-            ? <ReytingSetPlane donePalne={this.donePalne} />
+            ? <ReytingSetPlane donePlane={this.donePlane} />
             : null
 
         if (this.state.access === false) {
             return <div className="py-5 my-4 text-center">
-                <div className="alert alert-danger mx-auto shadow access-false">Доступ к рейтингу ограничен</div>
+                <div className="alert alert-danger mx-auto shadow access-false">Доступ к рейтингу ограничен или время сессии иcтекло</div>
             </div>
         }
 

@@ -67,7 +67,7 @@ class ReytingSetPlane extends React.Component {
 
         axios.post('reyting/setPlane', formdata).then(({ data }) => {
             this.setState({ show: false });
-            this.props.donePalne(data.period);
+            this.props.donePlane(data.period);
         }).catch(error => {
             this.setState({ error: echoerror(error) });
         }).then(() => {

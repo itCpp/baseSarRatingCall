@@ -32,8 +32,10 @@ function ReytingRow(props) {
         ? <ReytingNach stat={row.nachStat} zpNach={row.zpNach} kassaMonth={row.kassaMonth} plan={plan} />
         : null
 
+    const mb = row.myRow ? 'mb-4' : ''
+
     return (
-        <div className={`reyting-row color-${row.color} shadow-sm`}>
+        <div className={`reyting-row color-${row.color} ${mb} shadow-sm`}>
 
             {nachStat}
 
