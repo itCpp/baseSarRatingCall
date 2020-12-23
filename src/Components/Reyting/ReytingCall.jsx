@@ -470,6 +470,7 @@ class ReytingCall extends React.Component {
                         </div>
 
                         <div className="btn-group btn-group-sm d-block mt-2 mb-0" role="group">
+                            <a href="//saratov.4cpp.ru/modules/reyting/index.php?old=true" type="button" className="btn btn-secondary">Старая версия</a>
                             <button type="button" className={`btn btn-filter ${this.state.filter === "all" || this.state.filter === null ? 'active' : ''}`} onClick={this.setFilter} data-filter="all">Колл-центр</button>
                             <button type="button" className={`btn btn-filter ${this.state.filter === "3" ? 'active' : ''}`} onClick={this.setFilter} data-filter="3">Сектор <b>A</b></button>
                             <button type="button" className={`btn btn-filter ${this.state.filter === "4" ? 'active' : ''}`} onClick={this.setFilter} data-filter="4">Сектор <b>B</b></button>
