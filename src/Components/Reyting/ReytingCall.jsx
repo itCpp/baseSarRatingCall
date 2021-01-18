@@ -317,7 +317,7 @@ class ReytingCall extends React.Component {
 
         let date;
 
-        if (year && month && day)
+        if (year && month !== null && day)
             date = new Date(year, month, day);
         else if (year)
             date = new Date(year);
