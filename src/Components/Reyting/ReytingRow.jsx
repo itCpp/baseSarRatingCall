@@ -29,7 +29,7 @@ function ReytingRow(props) {
         : "show-more show-more-close"
 
     const nachStat = row.nachStat
-        ? <ReytingNach stat={row.nachStat} zpNach={row.zpNach} kassaMonth={row.kassaMonth} plan={plan} />
+        ? <ReytingNach stat={row.nachStat} zpNach={row.zpNach} kassaMonth={row.kassaMonth} plan={plan} row={row} />
         : null
 
     const mb = row.myRow ? 'mb-4' : ''
