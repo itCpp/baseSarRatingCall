@@ -1,9 +1,11 @@
+import React from 'react';
 import Icon from './../../Utils/FontAwesomeIcon'
 import ReytingNach from './ReytingNach'
 
 function ReytingRow(props) {
 
     const row = props.row;
+    const [show, setShow] = React.useState(false);
 
     const plan = props.filter !== "all" && props.filter !== null
         ? props.plan
@@ -20,11 +22,11 @@ function ReytingRow(props) {
         </tr>
     });
 
-    const opened = props.opened.indexOf(row.pin) >= 0
+    const opened = show
         ? "d-block"
         : "d-none"
 
-    const animate = props.opened.indexOf(row.pin) >= 0
+    const animate = show
         ? "show-more show-more-open"
         : "show-more show-more-close"
 
@@ -47,15 +49,17 @@ function ReytingRow(props) {
                 </div>
 
                 <div className="row-name">
-                    <div><strong>{row.fullName}</strong></div>
-                    <div>Нагрузка {row.nagruzka} руб</div>
-                    <div>Заявки - {row.sumZayavok} ({row.mosReq})</div>
-                    <div>Приходы: {row.prihod} × {row.zpPercent} = {row.zpZayavky} руб</div>
-                    <div>В день: {Number(row.comingPerDay).toFixed(0)}</div>
+                    <div className="text-nowrap"><strong>{row.fullName}</strong></div>
+                    <div className="text-nowrap">Нагрузка <b>{row.nagruzka}</b> руб</div>
+                    <div className="text-nowrap">Заявки <b>{row.sumZayavok} ({row.mosReq})</b></div>
+                    <div className="text-nowrap">Приходы <b>{row.prihod}</b> × {row.zpPercent} = {row.zpZayavky} руб</div>
+                    <div className="text-nowrap">В день <b>{Number(row.comingPerDay).toFixed(1)}</b></div>
+                    <div className="text-nowrap">Договоров <b>{row?.agreements?.firsts || 0}</b></div>
                 </div>
 
                 <div className="row-kpd text-center">
-                    <div>КПД <strong>{Number(row.kpdComing).toFixed(2)}%</strong></div>
+                    <div className="d-flex text-nowrap"><span className="mr-1">КПД Прих.</span><strong>{Number(row.kpdComing).toFixed(2)}%</strong></div>
+                    <div className="d-flex text-nowrap"><span className="mr-1">КПД Дог.</span><strong>{Number(row.kpdAgreements || 0).toFixed(2)}%</strong></div>
                     {row.mesto ? <div><small>{row.mesto} место</small></div> : null}
                 </div>
 
@@ -90,7 +94,7 @@ function ReytingRow(props) {
                 </div>
 
                 <div>
-                    <Icon icon={['fas','chevron-up']}  title="Смотреть подробности" data-id={row.pin} data-open={opened === "d-none" ? 0 : 1} onClick={props.showMore} className={animate} />
+                    <Icon icon={['fas','chevron-up']}  title="Смотреть подробности" data-id={row.pin} data-open={opened === "d-none" ? 0 : 1} onClick={() => setShow(p => !p)} className={animate} />
                 </div>
 
             </div>
